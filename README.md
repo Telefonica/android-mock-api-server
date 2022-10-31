@@ -1,6 +1,6 @@
-# Mock Library
+# Android Mock Api Server
 
-Mock is a framework that provides local data and allows you to test your app without a backend.
+It is a framework that provides local data and allows you to test your app without a backend.
 
 ### Features
 
