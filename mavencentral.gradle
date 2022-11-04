@@ -16,7 +16,7 @@ ext {
     PUBLISH_VERSION = version
 
     PUBLISH_RELEASE_NAME = 'Android Mock Api Server - Android'
-    PUBLISH_DESCRIPTION = 'Android Mock Api Server is a library to mock responses'
+    PUBLISH_DESCRIPTION = 'Android Mock Api Server is a library built on top of MockableApiServer to easily mock api responses for development and testing purposes'
     PUBLISH_REPO_URL = 'https://github.com/Telefonica/android-mock-api-server'
 }
 
