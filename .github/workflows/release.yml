@@ -2,7 +2,7 @@ name: "Upload release to MavenCentral"
 on:
   release:
     types: [published]
-obs:
+jobs:
   promote:
     runs-on: self-hosted-novum
     steps:
