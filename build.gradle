@@ -16,3 +16,5 @@ plugins {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+apply from: "${rootProject.projectDir}/publish_maven_central.gradle"
