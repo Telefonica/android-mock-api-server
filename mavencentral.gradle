@@ -27,7 +27,7 @@ publishing {
             artifactId PUBLISH_ARTIFACT_ID
             version PUBLISH_VERSION
 
-            artifact("$buildDir/outputs/aar/library-release.aar")
+            artifact("$buildDir/outputs/aar/mock-release.aar")
             artifact androidSourcesJar
 
             pom {
