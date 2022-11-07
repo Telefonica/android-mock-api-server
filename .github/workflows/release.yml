@@ -10,11 +10,9 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Build library
-        uses: docker://docker.tuenti.io/android/novum_android_api31:2
         with:
           args: 'bash ./gradlew clean :mock:assembleRelease'
       - name: Release library
-        uses: docker://docker.tuenti.io/android/novum_android_api31:2
         env:
           MOBILE_MAVENCENTRAL_USER: ${{ secrets.MOBILE_MAVENCENTRAL_USER }}
           MOBILE_MAVENCENTRAL_PASSWORD: ${{ secrets.MOBILE_MAVENCENTRAL_PASSWORD }}
