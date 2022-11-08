@@ -13,6 +13,11 @@ plugins {
     id 'io.github.gradle-nexus.publish-plugin' version '1.1.0' apply false
 }
 
+allprojects {
+    group = 'com.telefonica.mock'
+    version = System.getProperty("LIBRARY_VERSION") ?: "undefined"
+}
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
