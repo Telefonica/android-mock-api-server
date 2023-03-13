@@ -21,18 +21,23 @@ class MockHelper(context: Context) {
             .inject(this)
     }
 
-    suspend fun startServer() {
-        mockApiClient.startServer()
-    }
-
     fun stopServer() {
         mockApiClient.stopServer()
     }
 
     suspend fun getBaseUrl(): String = mockApiClient.getBaseUrl()
 
-    fun provideDispatcher(mocks: List<Mock>) {
-        mockApiClient.provideDispatcher(mocks)
+    suspend fun setUp() {
+        mockApiClient.setup()
+        mockApiClient.startServer()
+    }
+
+    fun enqueue(mock: Mock) {
+        mockApiClient.enqueue(mock)
+    }
+
+    fun enqueue(mocks: List<Mock>) {
+        mockApiClient.enqueue(mocks)
     }
 
     fun getMockFromFile(
