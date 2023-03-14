@@ -22,7 +22,7 @@ open class MockApiClient @Inject constructor(
     private val dispatcher = object : Dispatcher() {
         override fun dispatch(request: RecordedRequest): MockResponse {
             val mockFiles: List<Mock> = enqueuedAnswers
-                .filter { mock -> request.method == mock.method?.value }
+                .filter { mock -> request.method == mock.method.value }
                 .filter { mock ->
                     PatternMatcher(
                         mock.path,
