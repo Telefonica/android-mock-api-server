@@ -28,7 +28,7 @@ class MockHelper(context: Context) {
     suspend fun getBaseUrl(): String = mockApiClient.getBaseUrl()
 
     suspend fun setUp() {
-        mockApiClient.setup()
+        mockApiClient.setUp()
         mockApiClient.startServer()
     }
 
@@ -42,7 +42,7 @@ class MockHelper(context: Context) {
 
     fun getMockFromFile(
         path: String,
-        method: Method? = null,
+        method: Method,
         httpResponseCode: Int = 200,
         delayInMillis: Long = 1000,
         localJsonFile: String,
@@ -56,7 +56,7 @@ class MockHelper(context: Context) {
 
     fun getMockFromString(
         path: String,
-        method: Method? = null,
+        method: Method,
         httpResponseCode: Int = 200,
         delayInMillis: Long = 1000,
         body: String,
@@ -70,7 +70,7 @@ class MockHelper(context: Context) {
 
     fun <T> getMockFromObject(
         path: String,
-        method: Method? = null,
+        method: Method,
         httpResponseCode: Int = 200,
         delayInMillis: Long = 1000,
         dataObject: T,
@@ -84,7 +84,7 @@ class MockHelper(context: Context) {
 
     fun <T> getMockFromObject(
         path: String,
-        method: Method? = null,
+        method: Method,
         httpResponseCode: Int = 200,
         delayInMillis: Long = 1000,
         list: List<T>,

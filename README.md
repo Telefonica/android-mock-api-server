@@ -59,7 +59,7 @@ class App : Application() {
         ...
         if (BuildConfig.DEFAULT_ENVIRONMENT == Environment.DEMO) {
             CoroutineScope(Dispatchers.IO).launch {
-                mockHelper.setup()
+                mockHelper.setUp()
                 mockHelper.enqueue(getUserMocksUseCase()) // This use case provide a List<Mock>
             }
         }

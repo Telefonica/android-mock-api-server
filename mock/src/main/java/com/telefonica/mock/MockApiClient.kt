@@ -58,7 +58,7 @@ open class MockApiClient @Inject constructor(
         enqueuedAnswers.addAll(mocks)
     }
 
-    fun setup() {
+    fun setUp() {
         mockWebServer.dispatcher = dispatcher
     }
 
