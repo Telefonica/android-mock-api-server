@@ -29,8 +29,8 @@ class App : Application() {
         if (BuildConfig.DEFAULT_ENVIRONMENT == Environment.DEMO) {
             super.onCreate()
             CoroutineScope(Dispatchers.IO).launch {
-                mockHelper.startServer()
-                mockHelper.provideDispatcher(getUserMocksUseCase())
+                mockHelper.setUp()
+                mockHelper.enqueue(getUserMocksUseCase())
                 initBackendUrl()
             }
         }

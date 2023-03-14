@@ -11,7 +11,7 @@ sealed class Method(val value: String) {
 data class Mock(
     val path: String,
     val body: String = "{}",
-    val method: Method? = null,
+    val method: Method,
     val httpResponseCode: Int = 200,
     val delayInMillis: Long = 1000,
 )

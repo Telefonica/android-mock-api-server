@@ -14,7 +14,7 @@ open class MockProvider @Inject constructor(
 
     open fun fromFile(
         path: String,
-        method: Method? = null,
+        method: Method,
         httpResponseCode: Int,
         delayInMillis: Long,
         localJsonFile: String,
@@ -31,7 +31,7 @@ open class MockProvider @Inject constructor(
 
     open fun fromString(
         path: String,
-        method: Method? = null,
+        method: Method,
         httpResponseCode: Int,
         delayInMillis: Long,
         body: String,
@@ -45,7 +45,7 @@ open class MockProvider @Inject constructor(
 
     open fun <T> fromObject(
         path: String,
-        method: Method? = null,
+        method: Method,
         httpResponseCode: Int,
         delayInMillis: Long,
         dataObject: T
@@ -59,7 +59,7 @@ open class MockProvider @Inject constructor(
 
     open fun <T> fromObject(
         path: String,
-        method: Method? = null,
+        method: Method,
         httpResponseCode: Int,
         delayInMillis: Long,
         list: List<T>

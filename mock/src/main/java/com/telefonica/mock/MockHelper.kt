@@ -21,23 +21,28 @@ class MockHelper(context: Context) {
             .inject(this)
     }
 
-    suspend fun startServer() {
-        mockApiClient.startServer()
-    }
-
     fun stopServer() {
         mockApiClient.stopServer()
     }
 
     suspend fun getBaseUrl(): String = mockApiClient.getBaseUrl()
 
-    fun provideDispatcher(mocks: List<Mock>) {
-        mockApiClient.provideDispatcher(mocks)
+    suspend fun setUp() {
+        mockApiClient.setUp()
+        mockApiClient.startServer()
+    }
+
+    fun enqueue(mock: Mock) {
+        mockApiClient.enqueue(mock)
+    }
+
+    fun enqueue(mocks: List<Mock>) {
+        mockApiClient.enqueue(mocks)
     }
 
     fun getMockFromFile(
         path: String,
-        method: Method? = null,
+        method: Method,
         httpResponseCode: Int = 200,
         delayInMillis: Long = 1000,
         localJsonFile: String,
@@ -51,7 +56,7 @@ class MockHelper(context: Context) {
 
     fun getMockFromString(
         path: String,
-        method: Method? = null,
+        method: Method,
         httpResponseCode: Int = 200,
         delayInMillis: Long = 1000,
         body: String,
@@ -65,7 +70,7 @@ class MockHelper(context: Context) {
 
     fun <T> getMockFromObject(
         path: String,
-        method: Method? = null,
+        method: Method,
         httpResponseCode: Int = 200,
         delayInMillis: Long = 1000,
         dataObject: T,
@@ -79,7 +84,7 @@ class MockHelper(context: Context) {
 
     fun <T> getMockFromObject(
         path: String,
-        method: Method? = null,
+        method: Method,
         httpResponseCode: Int = 200,
         delayInMillis: Long = 1000,
         list: List<T>,

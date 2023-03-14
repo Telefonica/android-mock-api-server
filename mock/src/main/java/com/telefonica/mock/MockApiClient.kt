@@ -11,14 +11,31 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 open class MockApiClient @Inject constructor(
-    private val dispatcher: CoroutineDispatcher,
+    private val coroutineDispatcher: CoroutineDispatcher,
     private val mockWebServer: MockWebServer,
 ) {
 
     private val mockMap: MutableMap<String, List<Mock>> = mutableMapOf()
 
+    private val enqueuedAnswers: MutableList<Mock> = mutableListOf()
+
+    private val dispatcher = object : Dispatcher() {
+        override fun dispatch(request: RecordedRequest): MockResponse {
+            val mockFiles: List<Mock> = enqueuedAnswers
+                .filter { mock -> request.method == mock.method.value }
+                .filter { mock ->
+                    PatternMatcher(
+                        mock.path,
+                        PatternMatcher.PATTERN_SIMPLE_GLOB
+                    ).match(request.path)
+                }
+
+            return getMockResponse(mockFiles)
+        }
+    }
+
     suspend fun startServer() {
-        withContext(dispatcher) {
+        withContext(coroutineDispatcher) {
             runCatching {
                 mockWebServer.start(port = 0)
             }
@@ -29,25 +46,20 @@ open class MockApiClient @Inject constructor(
         mockWebServer.shutdown()
     }
 
-    suspend fun getBaseUrl(): String = withContext(dispatcher) {
+    suspend fun getBaseUrl(): String = withContext(coroutineDispatcher) {
         mockWebServer.url("/").toString()
     }
 
-    fun provideDispatcher(mocks: List<Mock>) {
-        mockWebServer.dispatcher = object : Dispatcher() {
-            override fun dispatch(request: RecordedRequest): MockResponse {
-                val mockFiles: List<Mock> = mocks
-                    .filter { mock -> request.method == mock.method?.value }
-                    .filter { mock ->
-                        PatternMatcher(
-                            mock.path,
-                            PatternMatcher.PATTERN_SIMPLE_GLOB
-                        ).match(request.path)
-                    }
+    fun enqueue(mock: Mock) {
+        enqueuedAnswers.add(mock)
+    }
 
-                return getMockResponse(mockFiles)
-            }
-        }
+    fun enqueue(mocks: List<Mock>) {
+        enqueuedAnswers.addAll(mocks)
+    }
+
+    fun setUp() {
+        mockWebServer.dispatcher = dispatcher
     }
 
     private fun getMockResponse(mockFiles: List<Mock>): MockResponse = when (mockFiles.isEmpty()) {
