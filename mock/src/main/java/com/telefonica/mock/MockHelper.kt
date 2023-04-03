@@ -3,6 +3,7 @@ package com.telefonica.mock
 import android.content.Context
 import com.telefonica.mock.di.DaggerMockComponent
 import com.telefonica.mock.di.MockApiModule
+import java.net.InetAddress
 import javax.inject.Inject
 
 class MockHelper(context: Context) {
@@ -27,9 +28,9 @@ class MockHelper(context: Context) {
 
     suspend fun getBaseUrl(): String = mockApiClient.getBaseUrl()
 
-    suspend fun setUp() {
+    suspend fun setUp(inetAddress: InetAddress = InetAddress.getByName("localhost"), port: Int = 0) {
         mockApiClient.setUp()
-        mockApiClient.startServer()
+        mockApiClient.startServer(inetAddress, port)
     }
 
     fun enqueue(mock: Mock) {
