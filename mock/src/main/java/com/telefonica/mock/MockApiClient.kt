@@ -7,6 +7,7 @@ import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.RecordedRequest
+import java.net.InetAddress
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -34,10 +35,10 @@ open class MockApiClient @Inject constructor(
         }
     }
 
-    suspend fun startServer() {
+    suspend fun startServer(inetAddress: InetAddress = InetAddress.getByName("localhost"), port: Int = 0) {
         withContext(coroutineDispatcher) {
             runCatching {
-                mockWebServer.start(port = 0)
+                mockWebServer.start(inetAddress = inetAddress, port = port)
             }
         }
     }
