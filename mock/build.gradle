@@ -34,6 +34,7 @@ android {
 dependencies {
 
     implementation "com.squareup.okhttp3:mockwebserver:4.9.3"
+    implementation "com.squareup.okhttp3:okhttp-tls:4.9.3"
 
     implementation "com.google.dagger:dagger:2.44"
     kapt "com.google.dagger:dagger-compiler:2.44"

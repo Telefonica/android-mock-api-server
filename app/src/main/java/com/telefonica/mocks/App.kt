@@ -29,7 +29,7 @@ class App : Application() {
         if (BuildConfig.DEFAULT_ENVIRONMENT == Environment.DEMO) {
             super.onCreate()
             CoroutineScope(Dispatchers.IO).launch {
-                mockHelper.setUp()
+                mockHelper.setUp(enableSsl = true)
                 mockHelper.enqueue(getUserMocksUseCase())
                 initBackendUrl()
             }

@@ -8,6 +8,9 @@ import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.RecordedRequest
 import java.net.InetAddress
+import okhttp3.tls.HandshakeCertificates
+import okhttp3.tls.HeldCertificate
+import java.net.InetAddress
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -35,7 +38,7 @@ open class MockApiClient @Inject constructor(
         }
     }
 
-    suspend fun startServer(inetAddress: InetAddress = InetAddress.getByName("localhost"), port: Int = 0) {
+    internal suspend fun startServer(inetAddress: InetAddress, port: Int = 0) {
         withContext(coroutineDispatcher) {
             runCatching {
                 mockWebServer.start(inetAddress = inetAddress, port = port)
@@ -59,9 +62,24 @@ open class MockApiClient @Inject constructor(
         enqueuedAnswers.addAll(mocks)
     }
 
-    fun setUp() {
+    internal fun setUp(address: InetAddress, enableSsl: Boolean) {
         mockWebServer.dispatcher = dispatcher
+        if (enableSsl) {
+            enableHttpsFor(mockWebServer, address)
+        }
     }
+
+    private fun enableHttpsFor(mockWebServer: MockWebServer, address: InetAddress) {
+        val serverCertificates = HandshakeCertificates.Builder()
+            .heldCertificate(buildCertificate(address.canonicalHostName))
+            .build()
+        mockWebServer.useHttps(serverCertificates.sslSocketFactory(), false)
+    }
+
+    private fun buildCertificate(altName: String): HeldCertificate = HeldCertificate.Builder()
+        .addSubjectAlternativeName(altName)
+        .build()
+
 
     private fun getMockResponse(mockFiles: List<Mock>): MockResponse = when (mockFiles.isEmpty()) {
         true -> MockResponse().setResponseCode(NOT_FOUND_ERROR)

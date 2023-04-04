@@ -28,8 +28,15 @@ class MockHelper(context: Context) {
 
     suspend fun getBaseUrl(): String = mockApiClient.getBaseUrl()
 
-    suspend fun setUp(inetAddress: InetAddress = InetAddress.getByName("localhost"), port: Int = 0) {
-        mockApiClient.setUp()
+    suspend fun setUp(
+        inetAddress: InetAddress = InetAddress.getByName("localhost"),
+        port: Int = 0,
+        enableSsl: Boolean = false,
+    ) {
+        mockApiClient.setUp(
+            address = inetAddress,
+            enableSsl = enableSsl,
+        )
         mockApiClient.startServer(inetAddress, port)
     }
 
