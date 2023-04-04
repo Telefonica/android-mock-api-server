@@ -6,6 +6,7 @@ import com.telefonica.mocks.domain.backend.InitBackendUrl
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.telefonica.mock.MockHelper
+import com.telefonica.mock.cert.AllCertsAllowedBuilderUpdater
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,7 +30,12 @@ class RemoteModule {
     @Provides
     fun provideOkHttpClient(
         interceptor: HttpLoggingInterceptor
-    ): OkHttpClient = OkHttpClient.Builder().addInterceptor(interceptor).build()
+    ): OkHttpClient = OkHttpClient.Builder()
+        .addInterceptor(interceptor)
+        .apply {
+            AllCertsAllowedBuilderUpdater.update(this)
+        }
+        .build()
 
     @Provides
     fun provideMoshi(): Moshi = Moshi

@@ -1,6 +1,7 @@
 package com.telefonica.mocks
 
 import android.app.Application
+import android.util.Log
 import com.telefonica.mock.MockHelper
 import com.telefonica.mocks.common.Environment
 import com.telefonica.mocks.domain.backend.InitBackendUrl
@@ -9,6 +10,7 @@ import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.net.InetAddress
 import javax.inject.Inject
 
 
@@ -29,7 +31,7 @@ class App : Application() {
         if (BuildConfig.DEFAULT_ENVIRONMENT == Environment.DEMO) {
             super.onCreate()
             CoroutineScope(Dispatchers.IO).launch {
-                mockHelper.setUp()
+                mockHelper.setUp(enableSsl = true)
                 mockHelper.enqueue(getUserMocksUseCase())
                 initBackendUrl()
             }
