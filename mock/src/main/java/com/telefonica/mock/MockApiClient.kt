@@ -10,7 +10,6 @@ import okhttp3.mockwebserver.RecordedRequest
 import java.net.InetAddress
 import okhttp3.tls.HandshakeCertificates
 import okhttp3.tls.HeldCertificate
-import java.net.InetAddress
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
