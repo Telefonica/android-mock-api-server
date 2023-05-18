@@ -7,6 +7,7 @@ import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.RecordedRequest
+import okhttp3.mockwebserver.SocketPolicy
 import java.net.InetAddress
 import okhttp3.tls.HandshakeCertificates
 import okhttp3.tls.HeldCertificate
@@ -18,17 +19,17 @@ open class MockApiClient @Inject constructor(
     private val mockWebServer: MockWebServer,
 ) {
 
-    private val mockMap: MutableMap<String, List<Mock>> = mutableMapOf()
+    private val mockMap: MutableMap<String, List<MockedResponse>> = mutableMapOf()
 
-    private val enqueuedAnswers: MutableList<Mock> = mutableListOf()
+    private val enqueuedAnswers: MutableList<RequestAndResponse> = mutableListOf()
 
     private val dispatcher = object : Dispatcher() {
         override fun dispatch(request: RecordedRequest): MockResponse {
-            val mockFiles: List<Mock> = enqueuedAnswers
-                .filter { mock -> request.method == mock.method.value }
-                .filter { mock ->
+            val mockFiles: List<RequestAndResponse> = enqueuedAnswers
+                .filter { requestAndResponseInfo -> request.method == requestAndResponseInfo.requestInfo.method.value }
+                .filter { requestAndResponseInfo ->
                     PatternMatcher(
-                        mock.path,
+                        requestAndResponseInfo.requestInfo.path,
                         PatternMatcher.PATTERN_SIMPLE_GLOB
                     ).match(request.path)
                 }
@@ -37,7 +38,7 @@ open class MockApiClient @Inject constructor(
         }
     }
 
-    internal suspend fun startServer(inetAddress: InetAddress, port: Int = 0) {
+    internal suspend fun startServer(inetAddress: InetAddress, port: Int = 8080) { //TODO remember
         withContext(coroutineDispatcher) {
             runCatching {
                 mockWebServer.start(inetAddress = inetAddress, port = port)
@@ -53,12 +54,8 @@ open class MockApiClient @Inject constructor(
         mockWebServer.url("/").toString()
     }
 
-    fun enqueue(mock: Mock) {
-        enqueuedAnswers.add(mock)
-    }
-
-    fun enqueue(mocks: List<Mock>) {
-        enqueuedAnswers.addAll(mocks)
+    internal fun enqueue(requestInfo: RequestInfo, mock: MockedResponse) {
+        enqueuedAnswers.add(RequestAndResponse(requestInfo, mock))
     }
 
     internal fun setUp(address: InetAddress, enableSsl: Boolean) {
@@ -80,27 +77,35 @@ open class MockApiClient @Inject constructor(
         .build()
 
 
-    private fun getMockResponse(mockFiles: List<Mock>): MockResponse = when (mockFiles.isEmpty()) {
+    private fun getMockResponse(mockFiles: List<RequestAndResponse>): MockResponse = when (mockFiles.isEmpty()) {
         true -> MockResponse().setResponseCode(NOT_FOUND_ERROR)
         false -> {
-            val path = mockFiles.first().path
+            val path = mockFiles.first().requestInfo.path
             val mockMapList = mockMap[path]
-            val mock: Mock = when (mockMapList != null && mockMapList.isNotEmpty()) {
+            val mock: MockedResponse = when (mockMapList != null && mockMapList.isNotEmpty()) {
                 true -> {
-                    val mock = mockMapList.first()
-                    mockMap[path] = mockMapList.filter { it != mock }
-                    mock
+                    val mockedResponse: MockedResponse = mockMapList.first()
+                    mockMap[path] = mockMapList.filter { it != mockedResponse }
+                    mockedResponse
                 }
                 false -> {
-                    val mock = mockFiles.first()
-                    mockMap[path] = mockFiles.filter { it != mock }
-                    mock
+                    val requestAndResponse = mockFiles.first()
+                    mockMap[path] = mockFiles.filter { it != requestAndResponse }.map { it.mockedResponse }
+                    requestAndResponse.mockedResponse
                 }
             }
-            MockResponse()
-                .setResponseCode(mock.httpResponseCode)
-                .setBodyDelay(mock.delayInMillis, TimeUnit.MILLISECONDS)
-                .setBody(mock.body)
+            when (mock) {
+                is MockedApiResponse -> MockResponse()
+                    .setResponseCode(mock.httpResponseCode)
+                    .setBodyDelay(mock.delayInMillis, TimeUnit.MILLISECONDS)
+                    .setBody(mock.body)
+                is MockedBufferedResponse -> MockResponse()
+                    .setResponseCode(mock.httpResponseCode)
+                    .setBodyDelay(mock.delayInMillis, TimeUnit.MILLISECONDS)
+                    .setBody(mock.buffer)
+                    .setSocketPolicy(SocketPolicy.DISCONNECT_AT_END)
+            }
+
         }
     }
 
