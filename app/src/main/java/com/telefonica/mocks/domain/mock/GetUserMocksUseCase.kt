@@ -3,7 +3,6 @@ package com.telefonica.mocks.domain.mock
 import com.telefonica.mock.Method
 import com.telefonica.mock.MockedApiResponse
 import com.telefonica.mock.MockHelper
-import com.telefonica.mock.whenever
 import com.telefonica.mocks.model.user.NameDto
 import com.telefonica.mocks.model.user.UserDto
 import com.telefonica.mocks.model.user.UserWrapperDto
@@ -14,9 +13,10 @@ open class GetUserMocksUseCase @Inject constructor(
 ) {
 
     operator fun invoke() {
-        whenever(mockHelper).on("image.jpg").thenReturnFromRawFile("demo_image")
-
-        whenever(mockHelper).on("/?results=5").thenReturnFromFile("user_list_success_1.json")
+        mockHelper.enqueue {
+            whenever("image.jpg").thenReturnFromRawFile("demo_image")
+            whenever("/?results=5").thenReturnFromFile("user_list_success_1.json")
+        }
     }
 
 //    operator fun invoke(): List<MockedApiResponse> = listOf(
