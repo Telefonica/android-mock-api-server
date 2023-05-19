@@ -22,6 +22,8 @@ class MockHelper(context: Context) {
             .inject(this)
     }
 
+    fun enqueue(block: EnqueuingContext.() -> Unit) = block(EnqueuingContext(this))
+
     fun stopServer() {
         mockApiClient.stopServer()
     }
@@ -45,16 +47,11 @@ class MockHelper(context: Context) {
     }
 }
 
-fun whenever(mockHelper: MockHelper): MockResponseBuilder = MockResponseBuilder(mockHelper)
-
-class MockResponseBuilder(private val mockHelper: MockHelper) {
-
-    fun on(
+class EnqueuingContext(val mockHelper: MockHelper) {
+    fun whenever(
         path: Path,
         method: Method = Method.Get,
-    ): MockResponseBuilderWithRequestInfo =
-        MockResponseBuilderWithRequestInfo(mockHelper, RequestInfo(path, method))
-
+    ): MockResponseBuilderWithRequestInfo = MockResponseBuilderWithRequestInfo(mockHelper, RequestInfo(path, method))
 }
 
 class MockResponseBuilderWithRequestInfo(
