@@ -39,7 +39,7 @@ open class MockApiClient @Inject constructor(
         }
     }
 
-    internal suspend fun startServer(inetAddress: InetAddress, port: Int = 8080) {
+    internal suspend fun startServer(inetAddress: InetAddress, port: Int = 0) {
         withContext(coroutineDispatcher) {
             runCatching {
                 mockWebServer.start(inetAddress = inetAddress, port = port)
