@@ -17,7 +17,6 @@ open class GetUserMocksUseCase @Inject constructor(
         mockHelper.enqueue {
             whenever("/image.png").thenReturnFromRawFile("demo_image")
             whenever("/?results=5").thenReturnFromFile("user_list_success_1.json")
-//            whenever("/?results=10").thenReturn(Moshi.Builder().build().adapter(UserWrapperDto::class.java).toJson(DEMO_LIST))
         }
     }
 
