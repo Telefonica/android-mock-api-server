@@ -30,7 +30,7 @@ class App : Application() {
             super.onCreate()
             CoroutineScope(Dispatchers.IO).launch {
                 mockHelper.setUp(enableSsl = true)
-                mockHelper.enqueue(getUserMocksUseCase())
+                getUserMocksUseCase()
                 initBackendUrl()
             }
         }

@@ -1,7 +1,8 @@
 package com.telefonica.mocks.domain.mock
 
+import com.squareup.moshi.Moshi
 import com.telefonica.mock.Method
-import com.telefonica.mock.Mock
+import com.telefonica.mock.MockedApiResponse
 import com.telefonica.mock.MockHelper
 import com.telefonica.mocks.model.user.NameDto
 import com.telefonica.mocks.model.user.UserDto
@@ -9,32 +10,18 @@ import com.telefonica.mocks.model.user.UserWrapperDto
 import javax.inject.Inject
 
 open class GetUserMocksUseCase @Inject constructor(
-    mockHelper: MockHelper
+    private val mockHelper: MockHelper
 ) {
 
-    operator fun invoke(): List<Mock> = listOf(
-        fiveUsersMock,
-        userMockError,
-        tenUserMock
-    )
+    operator fun invoke() {
+        mockHelper.enqueue {
+            whenever("/image.png").thenReturnFromRawFile("demo_image")
+            whenever("/?results=5").thenReturnFromFile("user_list_success_1.json")
+        }
+    }
 
-    private val userMockError = mockHelper.getMockFromFile(
-        path = "/?results=5",
-        localJsonFile = "user_list_success_1.json",
-        method = Method.Get,
-        httpResponseCode = 500
-    )
-    private val fiveUsersMock = mockHelper.getMockFromFile(
-        path = "/?results=5",
-        localJsonFile = "user_list_success_1.json",
-        method = Method.Get,
-        delayInMillis = 3000
-    )
-
-    private val tenUserMock = mockHelper.getMockFromObject(
-        path = "/?results=10",
-        method = Method.Get,
-        dataObject = UserWrapperDto(
+    companion object {
+        val DEMO_LIST = UserWrapperDto(
             results = listOf(
                 UserDto(
                     name = NameDto(
@@ -108,5 +95,5 @@ open class GetUserMocksUseCase @Inject constructor(
                 ),
             ),
         )
-    )
+    }
 }

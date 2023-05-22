@@ -12,7 +12,7 @@ class MockHelper(context: Context) {
     lateinit var mockApiClient: MockApiClient
 
     @Inject
-    lateinit var mockProvider: MockProvider
+    lateinit var fileReader: FileReader
 
     init {
         DaggerMockComponent
@@ -22,6 +22,8 @@ class MockHelper(context: Context) {
             .inject(this)
     }
 
+    fun enqueue(block: EnqueuingContext.() -> Unit) = block(EnqueuingContext(this))
+
     fun stopServer() {
         mockApiClient.stopServer()
     }
@@ -29,7 +31,7 @@ class MockHelper(context: Context) {
     suspend fun getBaseUrl(): String = mockApiClient.getBaseUrl()
 
     suspend fun setUp(
-        inetAddress: InetAddress = InetAddress.getByName("localhost"),
+        inetAddress: InetAddress = InetAddress.getByName(DEFAULT_HOSTNAME),
         port: Int = 0,
         enableSsl: Boolean = false,
     ) {
@@ -40,67 +42,65 @@ class MockHelper(context: Context) {
         mockApiClient.startServer(inetAddress, port)
     }
 
-    fun enqueue(mock: Mock) {
-        mockApiClient.enqueue(mock)
+    companion object {
+        const val DEFAULT_HOSTNAME = "localhost"
+    }
+}
+
+class EnqueuingContext(val mockHelper: MockHelper) {
+    fun whenever(
+        path: Path,
+        method: Method = Method.Get,
+    ): MockResponseBuilderWithRequestInfo = MockResponseBuilderWithRequestInfo(mockHelper, RequestInfo(path, method))
+}
+
+class MockResponseBuilderWithRequestInfo(
+    private val mockHelper: MockHelper,
+    private val requestInfo: RequestInfo,
+) {
+
+    fun thenReturn(
+        body: String = MockedApiResponse.DEFAULT_BODY,
+        httpResponseCode: Int = MockedResponse.DEFAULT_MOCK_HTTP_RESPONSE_CODE,
+        delayInMillis: Long = MockedResponse.DEFAULT_MOCK_DELAY_IN_MILLIS,
+    ) {
+        mockHelper.mockApiClient.enqueue(
+            requestInfo = requestInfo,
+            mock = MockedApiResponse(
+                body = body,
+                httpResponseCode = httpResponseCode,
+                delayInMillis = delayInMillis,
+            ),
+        )
+    }
+    fun thenReturnFromFile(
+        pathFromFile: String,
+        httpResponseCode: Int = MockedResponse.DEFAULT_MOCK_HTTP_RESPONSE_CODE,
+        delayInMillis: Long = MockedResponse.DEFAULT_MOCK_DELAY_IN_MILLIS,
+    ) {
+        mockHelper.mockApiClient.enqueue(
+            requestInfo = requestInfo,
+            mock = MockedApiResponse(
+                body = mockHelper.fileReader.readJsonFile(pathFromFile) ?: MockedApiResponse.DEFAULT_BODY,
+                httpResponseCode = httpResponseCode,
+                delayInMillis = delayInMillis,
+            )
+        )
     }
 
-    fun enqueue(mocks: List<Mock>) {
-        mockApiClient.enqueue(mocks)
+    fun thenReturnFromRawFile(
+        fileName: String,
+        httpResponseCode: Int = MockedResponse.DEFAULT_MOCK_HTTP_RESPONSE_CODE,
+        delayInMillis: Long = MockedResponse.DEFAULT_MOCK_DELAY_IN_MILLIS,
+    ) {
+        mockHelper.mockApiClient.enqueue(
+            requestInfo = requestInfo,
+            mock = MockedBufferedResponse(
+                buffer = mockHelper.fileReader.readRawFile(fileName),
+                httpResponseCode = httpResponseCode,
+                delayInMillis = delayInMillis,
+            )
+        )
     }
 
-    fun getMockFromFile(
-        path: String,
-        method: Method,
-        httpResponseCode: Int = 200,
-        delayInMillis: Long = 1000,
-        localJsonFile: String,
-    ): Mock = mockProvider.fromFile(
-        path = path,
-        method = method,
-        httpResponseCode = httpResponseCode,
-        delayInMillis = delayInMillis,
-        localJsonFile = localJsonFile
-    )
-
-    fun getMockFromString(
-        path: String,
-        method: Method,
-        httpResponseCode: Int = 200,
-        delayInMillis: Long = 1000,
-        body: String,
-    ): Mock = mockProvider.fromString(
-        path = path,
-        method = method,
-        httpResponseCode = httpResponseCode,
-        delayInMillis = delayInMillis,
-        body = body
-    )
-
-    fun <T> getMockFromObject(
-        path: String,
-        method: Method,
-        httpResponseCode: Int = 200,
-        delayInMillis: Long = 1000,
-        dataObject: T,
-    ): Mock = mockProvider.fromObject(
-        path = path,
-        method = method,
-        httpResponseCode = httpResponseCode,
-        delayInMillis = delayInMillis,
-        dataObject = dataObject
-    )
-
-    fun <T> getMockFromObject(
-        path: String,
-        method: Method,
-        httpResponseCode: Int = 200,
-        delayInMillis: Long = 1000,
-        list: List<T>,
-    ): Mock = mockProvider.fromObject(
-        path = path,
-        method = method,
-        httpResponseCode = httpResponseCode,
-        delayInMillis = delayInMillis,
-        list = list
-    )
 }
