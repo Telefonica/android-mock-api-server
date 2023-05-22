@@ -32,7 +32,7 @@ class MockHelper(context: Context) {
 
     suspend fun setUp(
         inetAddress: InetAddress = InetAddress.getByName(DEFAULT_HOSTNAME),
-        port: Int = 0,
+        port: Int = 8080,
         enableSsl: Boolean = false,
     ) {
         mockApiClient.setUp(

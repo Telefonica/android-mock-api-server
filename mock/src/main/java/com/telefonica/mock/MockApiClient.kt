@@ -1,6 +1,7 @@
 package com.telefonica.mock
 
 import android.os.PatternMatcher
+import android.util.Log
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import okhttp3.mockwebserver.Dispatcher
@@ -38,7 +39,7 @@ open class MockApiClient @Inject constructor(
         }
     }
 
-    internal suspend fun startServer(inetAddress: InetAddress, port: Int = 8080) { //TODO remember
+    internal suspend fun startServer(inetAddress: InetAddress, port: Int = 8080) {
         withContext(coroutineDispatcher) {
             runCatching {
                 mockWebServer.start(inetAddress = inetAddress, port = port)
