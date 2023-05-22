@@ -60,7 +60,11 @@ class App : Application() {
         if (BuildConfig.DEFAULT_ENVIRONMENT == Environment.DEMO) {
             CoroutineScope(Dispatchers.IO).launch {
                 mockHelper.setUp()
-                mockHelper.enqueue(getUserMocksUseCase()) // This use case provide a List<Mock>
+                mockHelper.enqueue {
+                    whenever("/image.png").thenReturnFromRawFile("demo_image")
+                    whenever("/?results=5").thenReturnFromFile("user_list_success_1.json")
+                    whenever("/?results=10").thenReturn(Moshi.Builder().build().adapter(UserWrapperDto::class.java).toJson(DEMO_LIST))
+                }
             }
         }
         ...
