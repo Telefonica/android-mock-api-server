@@ -17,6 +17,8 @@ open class GetUserMocksUseCase @Inject constructor(
         mockHelper.enqueue {
             whenever("/image.png").thenReturnFromRawFile("demo_image")
             whenever("/?results=5").thenReturnFromFile("user_list_success_1.json")
+            whenever("/?results=5").thenReturnFromFile("user_list_success_2.json")
+            whenever("/?results=5", method = Method.Delete).thenReturnFromFile("delete.json")
         }
     }
 

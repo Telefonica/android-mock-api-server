@@ -1,5 +1,6 @@
 package com.telefonica.mock
 
+import android.os.PatternMatcher
 import okio.Buffer
 
 sealed class Method(val value: String) {
@@ -46,3 +47,5 @@ internal class RequestAndResponse(val requestInfo: RequestInfo, val mockedRespon
 
 data class RequestInfo(val path: Path, val method: Method)
 typealias Path=String
+
+internal class RequestInfoWithPattern(val pathPattern: PatternMatcher, val method: Method)
