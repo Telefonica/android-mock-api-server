@@ -9,7 +9,7 @@ import javax.inject.Inject
 class MockHelper(context: Context) {
 
     @Inject
-    lateinit var mockApiClient: MockApiClient
+    lateinit var mockApiClient: MockedServer
 
     @Inject
     lateinit var fileReader: FileReader
@@ -66,7 +66,7 @@ class MockResponseBuilderWithRequestInfo(
     ) {
         mockHelper.mockApiClient.enqueue(
             requestInfo = requestInfo,
-            mock = MockedApiResponse(
+            mockedResponse = MockedApiResponse(
                 body = body,
                 httpResponseCode = httpResponseCode,
                 delayInMillis = delayInMillis,
@@ -80,7 +80,7 @@ class MockResponseBuilderWithRequestInfo(
     ) {
         mockHelper.mockApiClient.enqueue(
             requestInfo = requestInfo,
-            mock = MockedApiResponse(
+            mockedResponse = MockedApiResponse(
                 body = mockHelper.fileReader.readJsonFile(pathFromFile) ?: MockedApiResponse.DEFAULT_BODY,
                 httpResponseCode = httpResponseCode,
                 delayInMillis = delayInMillis,
@@ -95,7 +95,7 @@ class MockResponseBuilderWithRequestInfo(
     ) {
         mockHelper.mockApiClient.enqueue(
             requestInfo = requestInfo,
-            mock = MockedBufferedResponse(
+            mockedResponse = MockedBufferedResponse(
                 buffer = mockHelper.fileReader.readRawFile(fileName),
                 httpResponseCode = httpResponseCode,
                 delayInMillis = delayInMillis,

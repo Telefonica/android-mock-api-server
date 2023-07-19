@@ -1,9 +1,9 @@
 package com.telefonica.mock.di
 
 import android.content.Context
-import com.google.gson.Gson
-import com.telefonica.mock.MockApiClient
+import com.telefonica.mock.MockedServer
 import com.telefonica.mock.FileReader
+import com.telefonica.mock.ResponseDispatcher
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.Dispatchers
@@ -25,6 +25,7 @@ class MockApiModule(private val context: Context) {
 
     @Provides
     fun provideMockApiClient(
-        mockWebServer: MockWebServer
-    ): MockApiClient = MockApiClient(Dispatchers.IO, mockWebServer)
+        mockWebServer: MockWebServer,
+        responseDispatcher: ResponseDispatcher,
+    ): MockedServer = MockedServer(Dispatchers.IO, mockWebServer, responseDispatcher)
 }
