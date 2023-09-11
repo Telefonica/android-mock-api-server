@@ -24,11 +24,9 @@ open class MockedServer @Inject constructor(
         )
     }
 
-    internal suspend fun startServer(inetAddress: InetAddress, port: Int = 0) {
-        withContext(coroutineDispatcher) {
-            runCatching {
-                mockWebServer.start(inetAddress = inetAddress, port = port)
-            }
+    internal fun startServer(port: Int = 0) {
+        runCatching {
+            mockWebServer.start(port = port)
         }
     }
 
@@ -44,22 +42,22 @@ open class MockedServer @Inject constructor(
         responseDispatcher.enqueue(requestInfo, mockedResponse)
     }
 
-    internal fun setUp(address: InetAddress, enableSsl: Boolean) {
+    internal fun setUp(enableSsl: Boolean) {
         mockWebServer.dispatcher = dispatcher
         if (enableSsl) {
-            enableHttpsFor(mockWebServer, address)
+            enableHttpsFor(mockWebServer)
         }
     }
 
-    private fun enableHttpsFor(mockWebServer: MockWebServer, address: InetAddress) {
+    private fun enableHttpsFor(mockWebServer: MockWebServer) {
         val serverCertificates = HandshakeCertificates.Builder()
-            .heldCertificate(buildCertificate(address.canonicalHostName))
+            .heldCertificate(buildCertificate())
             .build()
         mockWebServer.useHttps(serverCertificates.sslSocketFactory(), false)
     }
 
-    private fun buildCertificate(altName: String): HeldCertificate = HeldCertificate.Builder()
-        .addSubjectAlternativeName(altName)
+    private fun buildCertificate(): HeldCertificate = HeldCertificate.Builder()
+        .addSubjectAlternativeName("localhost")
         .build()
 
     companion object {
