@@ -25,9 +25,7 @@ open class MockedServer @Inject constructor(
     }
 
     internal fun startServer(port: Int = 0) {
-        runCatching {
-            mockWebServer.start(port = port)
-        }
+        mockWebServer.start(port = port)
     }
 
     fun stopServer() {
