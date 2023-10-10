@@ -45,7 +45,7 @@ class MockedBufferedResponse(
 
 internal class RequestAndResponse(val requestInfo: RequestInfo, val mockedResponse: MockedResponse)
 
-data class RequestInfo(val path: Path, val method: Method)
+data class RequestInfo(val path: Path, val method: Method, val matchingPattern: Int)
 typealias Path=String
 
 internal class RequestInfoWithPattern(val pathPattern: PatternMatcher, val method: Method)

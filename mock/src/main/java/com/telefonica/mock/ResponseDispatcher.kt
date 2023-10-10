@@ -15,7 +15,10 @@ class ResponseDispatcher @Inject constructor() {
 
     fun dispatch(recordedMethod: String?, recordedPath: String?): MockResponse {
         val responseList = responses
-            .filterKeys { requestInfo -> requestInfo.method.value == recordedMethod && requestInfo.path.toPattern().match(recordedPath) }
+            .filterKeys { requestInfo ->
+                requestInfo.method.value == recordedMethod
+                        && requestInfo.path.toPattern(requestInfo.matchingPattern).match(recordedPath)
+            }
             .entries
             .firstOrNull()
             ?.value
@@ -45,5 +48,5 @@ class ResponseDispatcher @Inject constructor() {
         responses[requestInfo] = mockListUpdated
     }
 
-    private fun Path.toPattern(): PatternMatcher = PatternMatcher(this, PatternMatcher.PATTERN_SIMPLE_GLOB)
+    private fun Path.toPattern(pattern: Int): PatternMatcher = PatternMatcher(this, pattern)
 }
