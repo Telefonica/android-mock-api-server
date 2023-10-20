@@ -1,7 +1,6 @@
 package com.telefonica.mock
 
 import android.content.Context
-import android.os.PatternMatcher.PATTERN_SIMPLE_GLOB
 import com.telefonica.mock.di.DaggerMockComponent
 import com.telefonica.mock.di.MockApiModule
 import javax.inject.Inject
@@ -42,9 +41,8 @@ class MockHelper(context: Context) {
 class EnqueuingContext(val mockHelper: MockHelper) {
     fun whenever(
         path: Path,
-        method: Method = Method.Get,
-        matchingPattern: Int = PATTERN_SIMPLE_GLOB
-    ): MockResponseBuilderWithRequestInfo = MockResponseBuilderWithRequestInfo(mockHelper, RequestInfo(path, method, matchingPattern))
+        method: Method = Method.Get
+    ): MockResponseBuilderWithRequestInfo = MockResponseBuilderWithRequestInfo(mockHelper, RequestInfo(path, method))
 }
 
 class MockResponseBuilderWithRequestInfo(

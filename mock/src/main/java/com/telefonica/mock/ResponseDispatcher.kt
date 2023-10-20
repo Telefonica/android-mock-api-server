@@ -1,6 +1,5 @@
 package com.telefonica.mock
 
-import android.os.PatternMatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.SocketPolicy
 import java.util.*
@@ -16,8 +15,7 @@ class ResponseDispatcher @Inject constructor() {
     fun dispatch(recordedMethod: String?, recordedPath: String?): MockResponse {
         val responseList = responses
             .filterKeys { requestInfo ->
-                requestInfo.method.value == recordedMethod
-                        && requestInfo.path.toPattern(requestInfo.matchingPattern).match(recordedPath)
+                requestInfo.method.value == recordedMethod && !recordedPath.isNullOrEmpty() && Regex(requestInfo.path).matches(recordedPath)
             }
             .entries
             .firstOrNull()
@@ -47,6 +45,4 @@ class ResponseDispatcher @Inject constructor() {
         val mockListUpdated = (responses[requestInfo] ?: LinkedList()).apply { add(mockedResponse) }
         responses[requestInfo] = mockListUpdated
     }
-
-    private fun Path.toPattern(pattern: Int): PatternMatcher = PatternMatcher(this, pattern)
 }
