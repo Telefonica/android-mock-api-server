@@ -3,7 +3,6 @@ package com.telefonica.mock
 import android.content.Context
 import com.telefonica.mock.di.DaggerMockComponent
 import com.telefonica.mock.di.MockApiModule
-import java.net.InetAddress
 import javax.inject.Inject
 
 class MockHelper(context: Context) {
@@ -42,7 +41,7 @@ class MockHelper(context: Context) {
 class EnqueuingContext(val mockHelper: MockHelper) {
     fun whenever(
         path: Path,
-        method: Method = Method.Get,
+        method: Method = Method.Get
     ): MockResponseBuilderWithRequestInfo = MockResponseBuilderWithRequestInfo(mockHelper, RequestInfo(path, method))
 }
 
