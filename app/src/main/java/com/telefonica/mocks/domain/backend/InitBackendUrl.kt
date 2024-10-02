@@ -11,7 +11,7 @@ open class InitBackendUrl @Inject constructor(
     private val backendRepository: BackendRepository,
 ) {
 
-    open suspend operator fun invoke() {
+    open operator fun invoke() {
         backendRepository.backendUrl = when (BuildConfig.DEFAULT_ENVIRONMENT == Environment.DEMO) {
             true -> mockHelper.getBaseUrl()
             false -> BuildConfig.DEFAULT_ENVIRONMENT.baseUrl

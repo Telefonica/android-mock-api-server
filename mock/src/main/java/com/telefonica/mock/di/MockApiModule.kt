@@ -27,5 +27,5 @@ class MockApiModule(private val context: Context) {
     fun provideMockApiClient(
         mockWebServer: MockWebServer,
         responseDispatcher: ResponseDispatcher,
-    ): MockedServer = MockedServer(Dispatchers.IO, mockWebServer, responseDispatcher)
+    ): MockedServer = MockedServer(mockWebServer, responseDispatcher)
 }
