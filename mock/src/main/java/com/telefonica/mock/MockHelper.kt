@@ -27,7 +27,7 @@ class MockHelper(context: Context) {
         mockApiClient.stopServer()
     }
 
-    suspend fun getBaseUrl(): String = mockApiClient.getBaseUrl()
+    fun getBaseUrl(): String = mockApiClient.getBaseUrl()
 
     fun setUp(
         port: Int = 0,

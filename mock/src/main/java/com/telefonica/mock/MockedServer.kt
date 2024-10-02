@@ -1,7 +1,5 @@
 package com.telefonica.mock
 
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.withContext
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -11,7 +9,6 @@ import okhttp3.tls.HeldCertificate
 import javax.inject.Inject
 
 open class MockedServer @Inject constructor(
-    private val coroutineDispatcher: CoroutineDispatcher,
     private val mockWebServer: MockWebServer,
     private val responseDispatcher: ResponseDispatcher,
 ) {
@@ -31,9 +28,7 @@ open class MockedServer @Inject constructor(
         mockWebServer.shutdown()
     }
 
-    suspend fun getBaseUrl(): String = withContext(coroutineDispatcher) {
-        mockWebServer.url("/").toString()
-    }
+    fun getBaseUrl(): String = mockWebServer.url("/").toString()
 
     internal fun enqueue(requestInfo: RequestInfo, mockedResponse: MockedResponse) {
         responseDispatcher.enqueue(requestInfo, mockedResponse)
