@@ -12,8 +12,8 @@ sealed class Method(val value: String) {
 }
 
 sealed class MockedResponse(
-    val httpResponseCode: Int = DEFAULT_MOCK_HTTP_RESPONSE_CODE,
-    val delayInMillis: Long = DEFAULT_MOCK_DELAY_IN_MILLIS,
+    open val httpResponseCode: Int = DEFAULT_MOCK_HTTP_RESPONSE_CODE,
+    open val delayInMillis: Long = DEFAULT_MOCK_DELAY_IN_MILLIS,
 ) {
     companion object {
         const val DEFAULT_MOCK_DELAY_IN_MILLIS = 0L
@@ -21,10 +21,10 @@ sealed class MockedResponse(
     }
 }
 
-class MockedApiResponse(
+data class MockedApiResponse(
     val body: String = DEFAULT_BODY,
-    httpResponseCode: Int = DEFAULT_MOCK_HTTP_RESPONSE_CODE,
-    delayInMillis: Long = DEFAULT_MOCK_DELAY_IN_MILLIS,
+    override val httpResponseCode: Int = DEFAULT_MOCK_HTTP_RESPONSE_CODE,
+    override val delayInMillis: Long = DEFAULT_MOCK_DELAY_IN_MILLIS,
 ) : MockedResponse(
     httpResponseCode,
     delayInMillis,
@@ -34,10 +34,10 @@ class MockedApiResponse(
     }
 }
 
-class MockedBufferedResponse(
+data class MockedBufferedResponse(
     val buffer: Buffer,
-    httpResponseCode: Int = DEFAULT_MOCK_HTTP_RESPONSE_CODE,
-    delayInMillis: Long = DEFAULT_MOCK_DELAY_IN_MILLIS,
+    override val httpResponseCode: Int = DEFAULT_MOCK_HTTP_RESPONSE_CODE,
+    override val delayInMillis: Long = DEFAULT_MOCK_DELAY_IN_MILLIS,
 ) : MockedResponse(
     httpResponseCode,
     delayInMillis,
