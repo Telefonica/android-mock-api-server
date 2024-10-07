@@ -24,7 +24,7 @@ class ResponseDispatcher @Inject constructor() {
         return when {
             responseList.isNullOrEmpty() -> MockResponse().setResponseCode(MockedServer.RESPONSE_NOT_FOUND_CODE)
             else -> {
-                val response = responseList.poll()
+                val response = responseList.poll() ?: return MockResponse().setResponseCode(MockedServer.RESPONSE_NOT_FOUND_CODE)
                 responseList.add(response)
                 when (response) {
                     is MockedApiResponse -> MockResponse()
