@@ -7,6 +7,7 @@ plugins {
 
 android {
     compileSdk 33
+    namespace "com.telefonica.mocks"
 
     defaultConfig {
         applicationId "com.telefonica.mocks"
@@ -19,6 +20,10 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     buildTypes {
