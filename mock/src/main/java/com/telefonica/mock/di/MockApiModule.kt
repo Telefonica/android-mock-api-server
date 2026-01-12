@@ -6,7 +6,6 @@ import com.telefonica.mock.FileReader
 import com.telefonica.mock.ResponseDispatcher
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.Dispatchers
 import okhttp3.mockwebserver.MockWebServer
 import javax.inject.Singleton
 

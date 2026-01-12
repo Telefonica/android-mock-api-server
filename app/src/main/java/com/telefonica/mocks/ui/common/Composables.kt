@@ -11,13 +11,13 @@ import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.telefonica.mocks.R
 import com.telefonica.mocks.model.user.UserBo
 
 @Composable
@@ -43,7 +43,7 @@ fun Error(message: String) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Icon(
-                imageVector = Icons.Rounded.Warning,
+                painter = painterResource(R.drawable.rounded_warning),
                 contentDescription = null,
                 tint = Color.Yellow
             )
